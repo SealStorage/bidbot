@@ -32,9 +32,9 @@ type LotusClient interface {
 
 // Client provides access to Lotus for importing deal data.
 type Client struct {
-	cmin     api.StorageMiner
-	cmkt     api.StorageMiner
-	fakeMode bool
+	cmin api.StorageMiner
+	cmkt api.StorageMiner
+	//fakeMode bool
 
 	ctx       context.Context
 	finalizer *finalizer.Finalizer
@@ -48,13 +48,13 @@ func New(maddr string, authToken string, marketMaddr string, marketAuthToken str
 	fin.Add(finalizer.NewContextCloser(cancel))
 
 	lc := &Client{
-		fakeMode:  fakeMode,
+		//fakeMode:  fakeMode,
 		ctx:       ctx,
 		finalizer: fin,
 	}
-	if lc.fakeMode {
-		return lc, nil
-	}
+	//if lc.fakeMode {
+	//	return lc, nil
+	//}
 
 	builder, err := newBuilder(maddr, authToken, connRetries)
 	if err != nil {
@@ -82,9 +82,9 @@ func New(maddr string, authToken string, marketMaddr string, marketAuthToken str
 	}
 
 	client := &Client{
-		cmin:      cmin,
-		cmkt:      cmkt,
-		fakeMode:  fakeMode,
+		cmin: cmin,
+		cmkt: cmkt,
+		//fakeMode:  fakeMode,
 		ctx:       ctx,
 		finalizer: fin,
 	}
@@ -102,9 +102,9 @@ func (c *Client) Close() error {
 // HealthCheck checks if the lotus client is healthy enough so bidbot can
 // participate in bidding.
 func (c *Client) HealthCheck() error {
-	if c.fakeMode {
-		return nil
-	}
+	//if c.fakeMode {
+	//	return nil
+	//}
 	ctx, cancel := context.WithTimeout(c.ctx, requestTimeout)
 	defer cancel()
 	start := time.Now()
@@ -144,9 +144,9 @@ func (c *Client) CurrentSealingSectors() (int, error) {
 
 // ImportData imports deal data into Lotus.
 func (c *Client) ImportData(pcid cid.Cid, file string) error {
-	if c.fakeMode {
-		return nil
-	}
+	//if c.fakeMode {
+	//	return nil
+	//}
 	ctx, cancel := context.WithTimeout(c.ctx, requestTimeout)
 	defer cancel()
 	if err := c.cmkt.MarketImportDealData(ctx, pcid, file); err != nil {
